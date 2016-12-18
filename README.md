@@ -1,11 +1,5 @@
 # Slappy
 
-[![Gem Version](https://badge.fury.io/rb/slappy.svg)](https://badge.fury.io/rb/slappy)
-[![Build Status](https://travis-ci.org/wakaba260/slappy.svg?branch=master)](https://travis-ci.org/wakaba260/slappy)
-[![Code Climate](https://codeclimate.com/github/wakaba260/slappy/badges/gpa.svg)](https://codeclimate.com/github/wakaba260/slappy)
-[![Test Coverage](https://codeclimate.com/github/wakaba260/slappy/badges/coverage.svg)](https://codeclimate.com/github/wakaba260/slappy/coverage)
-[![Dependency Status](https://gemnasium.com/wakaba260/slappy.svg)](https://gemnasium.com/wakaba260/slappy)
-
 This gem support to make slack bot, inspire from [hubot](https://github.com/github/hubot) and [sinatra](https://github.com/sinatra/sinatra).
 
 Use the Slack Realtime API and Web API(see the [official-documentation](https://api.slack.com)).

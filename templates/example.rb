@@ -1,4 +1,4 @@
-# Slappy Examples
+# Remoppy Examples
 #
 # # called when start up
 # hello do
@@ -21,13 +21,13 @@
 # # event object is slack event JSON (convert to Hashie::Mash)
 # hear '^bar (.*)' do |event|
 #   puts event.channel #=> channel id
-#   say 'slappy!', channel: event.channel #=> to received message channel
-#   say 'slappy!', channel: '#general'
-#   say 'slappy!', username: 'slappy!', icon_emoji: ':slappy:'
+#   say 'remoppy!', channel: event.channel #=> to received message channel
+#   say 'remoppy!', channel: '#general'
+#   say 'remoppy!', username: 'remoppy!', icon_emoji: ':remoppy:'
 # end
 #
 #
 # # use regexp literal
 # hear /^foobar/ do
-#   say 'slappppy!'
+#   say 'remoppppy!'
 # end
