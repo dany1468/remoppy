@@ -34,4 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-rubocop'
   spec.add_development_dependency 'codeclimate-test-reporter'
   spec.add_development_dependency 'timecop'
+  spec.add_development_dependency 'test-unit'
+  spec.add_development_dependency 'test-unit-rr'
 end
