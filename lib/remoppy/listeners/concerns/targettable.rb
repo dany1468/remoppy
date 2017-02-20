@@ -15,51 +15,41 @@ module Remoppy
 
       class Target
         def valid?(event)
-          return true if channel.blank? && user.blank?
+          return true if participation.blank?
 
           result = []
 
-          result << false unless validation(:channel, event)
-          result << false unless validation(:user, event)
+          result << false unless validation(:participation, event)
 
           result.blank?
         end
 
         def validation(target, event)
           return true if send(target).compact.blank?
-          unless send(:list, target).include? event.send target
+
+          unless send(target).include?(event.send(target))
             Debug.log "Message from restrict #{target}(expect: #{target_names(target)})"
             return false
           end
+
           true
         end
 
-        def channel=(value)
-          value = [value] unless value.instance_of? Array
-          @channel = value
+        def participation=(participation_names)
+          @participation = to_participation(Array.wrap(participation_names))
         end
 
-        def list(target)
-          send(target).each_with_object([]) do |t, result|
-            # result << Slappy::SlackAPI.find(t)
-          end
+        def participation
+          @participation ||= []
         end
 
-        def channel
-          @channel ||= []
+        def to_participation(participation_names)
+          room = Remoppy::Remotty::Api::Room.rooms
+          room.participations.select {|p| p.name.in?(participation_names) }.map(&:id)
         end
 
         def target_names(target)
           send(target).join(',')
-        end
-
-        def user=(value)
-          value = [value] unless value.instance_of? Array
-          @user = value
-        end
-
-        def user
-          @user ||= []
         end
       end
     end

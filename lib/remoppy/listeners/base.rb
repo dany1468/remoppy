@@ -12,6 +12,7 @@ module Remoppy
         if options[:from]
           target.channel = options[:from][:channel]
           target.user = options[:from][:user]
+          target.participation = options[:from][:participation]
         end
         @callback = callback
       end

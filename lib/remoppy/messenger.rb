@@ -1,25 +1,28 @@
 module Remoppy
   class Messenger
-    class MissingChannelException < StandardError; end
-
-    CHANNEL_APIS = [Remoppy::Remotty::Api::Participation]
+    class MissingParticipationException < StandardError; end
 
     def initialize(options = {})
       opt = options.dup
-      @destination = {}
-      @destination = opt.delete(:channel)
+      @destination = opt.delete(:participation)
       @options = opt
     end
 
     def message
+      dest_id = @options.delete(:participation_id) || participation_id(@options.delete(:participation))
+      raise MissingParticipationException unless dest_id
+
       options = merge_params(@options)
 
-      Remoppy::Remotty::Api::Comment.create(participations_id: @destination, comment: {content: options[:text], all: false})
-
-      # fail SlackAPI::SlackError.new, response['error'] unless response['ok']
+      Remoppy::Remotty::Api::Comment.create(participations_id: dest_id, comment: {content: options[:text], all: options.fetch(:all, false)})
     end
 
     private
+
+    def participation_id(participation_name)
+      room = Remoppy::Remotty::Api::Room.rooms
+      room.participations.find {|p| p.name == participation_name }&.id
+    end
 
     def config
       Remoppy.configuration

@@ -21,13 +21,6 @@ module Remoppy
 
         true
       end
-
-      private
-
-      def time_valid?(event)
-        return true if event.ts.nil?
-        event.ts > Remoppy.client.start_time
-      end
     end
   end
 end

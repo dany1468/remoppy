@@ -9,7 +9,6 @@ module Remoppy
 
     def initialize(data)
       @data = Hashie::Mash.new data
-      puts "Event class initialize #{@data}"
     end
 
     def participation_id
@@ -22,6 +21,10 @@ module Remoppy
 
     def text
       comment.content
+    end
+
+    def participation
+      participation_id
     end
 
     def channel
