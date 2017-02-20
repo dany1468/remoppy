@@ -9,8 +9,8 @@ SimpleCov.start do
 end
 
 RSpec.configure do |config|
-  config.before(:all) { Slappy.configure { |c| c.logger = Logger.new(nil) } }
+  config.before(:all) { Remoppy.configure { |c| c.logger = Logger.new(nil) } }
 end
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'slappy'
+require 'remoppy'

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Slappy::Commands::Generator do
-  let(:generator_command) { Slappy::Commands::Generator.new }
+describe Remoppy::Commands::Generator do
+  let(:generator_command) { Remoppy::Commands::Generator.new }
   describe '#template_script_path' do
     subject { FileTest.file? file_path }
     let(:file_path) { generator_command.send :template_script_path }

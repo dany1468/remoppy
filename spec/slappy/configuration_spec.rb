@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Slappy::Configuration do
-  let(:configuration) { Slappy::Configuration.new }
+describe Remoppy::Configuration do
+  let(:configuration) { Remoppy::Configuration.new }
 
   describe '.logger' do
     subject { configuration.logger }

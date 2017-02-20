@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-include Slappy
+include Remoppy
 
-describe Slappy::Commands::Run do
+describe Remoppy::Commands::Run do
   let(:run_command) { Commands::Run.new }
   let(:current_dir) { File.dirname(__FILE__) }
   let(:load_dir) { File.expand_path '../../files/', current_dir }
@@ -11,8 +11,8 @@ describe Slappy::Commands::Run do
   let(:file_name) { 'dummy.rb' }
 
   before do
-    Slappy.configuration.scripts_dir_path = load_dir
-    Slappy.configuration.lib_dir_path = load_dir
+    Remoppy.configuration.scripts_dir_path = load_dir
+    Remoppy.configuration.lib_dir_path = load_dir
     allow_any_instance_of(Configuration).to receive(:config_file_path).and_return(file_path)
     allow_any_instance_of(Client).to receive(:start).and_return(nil)
   end
@@ -46,7 +46,7 @@ describe Slappy::Commands::Run do
     end
 
     context 'when not exist path given' do
-      before { Slappy.configuration.send config_dir_method, not_exist_dir }
+      before { Remoppy.configuration.send config_dir_method, not_exist_dir }
       it "should raise error and 'direcotory not_exist_dir not found' message" do
         expect { subject }.to raise_error error_class, "directory #{not_exist_dir} not found"
       end

@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-describe Slappy::Client do
-  let(:client) { Slappy::Client.new }
-  let(:realtime) { ::Slack::RealTime::Client.new(url) }
+describe Remoppy::Client do
+  let(:client) { Remoppy::Client.new }
+  let(:realtime) { Remoppy::Remotty::Realtime::Client.new(url, nil, nil) }
   let(:url)      { nil }
 
   before do
     # There classes in slack-api (Stop connection for slack)
-    allow_any_instance_of(::Slack::API).to receive(:realtime).and_return(realtime)
-    allow_any_instance_of(::Slack::RealTime::Client).to receive(:start).and_return(nil)
+    allow_any_instance_of(Remoppy::Remotty::Api).to receive(:realtime).and_return(realtime)
+    allow_any_instance_of(Remoppy::Remotty::Realtime::Client).to receive(:start).and_return(nil)
   end
 
   describe '#hear' do
     before { size.times { client.hear(regexp) { puts 'hear' } } }
-    subject { client.instance_variable_get(:@callbacks)[:message] }
+    subject { client.instance_variable_get(:@callbacks)[:comment] }
     let(:regexp) { /test/ }
     let(:size)   { 3 }
 
@@ -23,37 +23,46 @@ describe Slappy::Client do
   end
 
   describe '#respond' do
+    let(:participation_id) { 1234 }
+    let(:comment_id) { 5678 }
+    let(:pattern) { 'test' }
+    let(:respond_message) { 'respond' }
+    let(:botname) { 'slappy' }
+    let(:event) { Remoppy::Event.new participation_id: participation_id, comment_id: comment_id }
+    let(:comment) { double('comment') }
+
     before do
-      Slappy.configure { |config| config.robot.botname = botname }
-      allow_any_instance_of(Slappy::Event).to receive(:channel).and_return(channel)
-      allow_any_instance_of(Slappy::Listener::TextListener).to receive(:valid?).and_return(true)
-      allow_any_instance_of(Slappy::Listener::TextListener).to receive(:target?).and_return(true)
-      client.respond pattern, options, &block
+      Remoppy.configure {|config| config.robot.botname = botname }
+
+      allow_any_instance_of(Remoppy::Listener::TextListener).to receive(:target?).and_return(true)
+      allow(Remoppy::Remotty::Api::Comment).to receive(:find).with(hash_including(
+        participations_id: participation_id, comment_id: comment_id
+      )) { comment }
+
+      allow(comment).to receive(:content) { event_text }
+
+      client.respond(pattern) { print respond_message }
     end
 
-    subject { client.instance_variable_get(:@callbacks)[:message] }
-    let(:pattern) { 'test' }
-    let(:options) { Hash.new }
-    let(:block)   { proc { print 'respond' } }
-    let(:event)   { Slappy::Event.new text: "#{botname} #{pattern}", channel: 'slappy' }
-    let(:botname) { 'slappy' }
-    let(:channel) { Slappy::SlackAPI::Channel.new id: '12345', name: 'slappy' }
+    subject { client.instance_variable_get(:@callbacks)[:comment] }
 
     it 'should be registerd' do
       expect(subject.size).to eq 1
     end
 
     context 'when match pattern' do
+      let(:event_text) { "#{botname} #{pattern}" }
+
       it 'should be callback call' do
-        expect { subject.first.call(event) }.to output('respond').to_stdout
+        expect { subject.first.call(event) }.to output(respond_message).to_stdout
       end
     end
 
     context 'when not match pattern' do
-      let(:event) { Slappy::Event.new text: pattern, channel: 'slappy' }
+      let(:event_text) { pattern }
 
       it 'should not be callback call' do
-        expect { subject.first.call(event) }.to output(nil).to_stdout
+        expect { subject.first.call(event) }.to output('').to_stdout
       end
     end
   end
@@ -62,7 +71,7 @@ describe Slappy::Client do
     subject { client.start }
 
     before do
-      allow_any_instance_of(::Slack::RealTime::Client).to receive(:start).and_raise(StandardError)
+      allow_any_instance_of(Remoppy::Remotty::Realtime::Client).to receive(:start).and_raise(StandardError)
       allow(STDERR).to receive(:puts).and_return(nil)
       client.goodnight { print 'goodnight' }
     end
@@ -72,7 +81,7 @@ describe Slappy::Client do
     end
 
     context 'when stop_with_error is false' do
-      before { Slappy.configure { |config| config.stop_with_error = false } }
+      before { Remoppy.configure { |config| config.stop_with_error = false } }
       it { expect { subject }.not_to raise_error }
       it { expect { subject }.to output('goodnight').to_stdout }
     end
@@ -108,6 +117,6 @@ describe Slappy::Client do
 
   describe '#config' do
     subject { client.send :config }
-    it { is_expected.to be_instance_of Slappy::Configuration }
+    it { is_expected.to be_instance_of Remoppy::Configuration }
   end
 end

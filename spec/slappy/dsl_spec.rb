@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'slappy/dsl'
+require 'remoppy/dsl'
 
-describe Slappy::DSL do
+describe Remoppy::DSL do
   describe '.delegate' do
-    before { target.extend Slappy::DSL }
+    before { target.extend Remoppy::DSL }
     let(:target) { Object.new }
     subject { target }
 
@@ -18,7 +18,7 @@ describe Slappy::DSL do
     end
 
     context 'when add receiver call' do
-      subject { Slappy }
+      subject { Remoppy }
       it { expect { subject.hello }.not_to raise_error }
       it { expect(subject.respond_to? :hello).to be_truthy }
     end

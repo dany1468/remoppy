@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Slappy::Schedule do
+describe Remoppy::Schedule do
   let(:schedule) { described_class.new }
   let(:pattern)  { '* * * * *' }
   let(:id)       { 'test' }

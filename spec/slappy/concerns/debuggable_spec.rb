@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Slappy::Debuggable do
+describe Remoppy::Debuggable do
   class Test1
-    include Slappy::Debuggable
+    include Remoppy::Debuggable
   end
 
   class Test2
-    include Slappy::Debuggable
+    include Remoppy::Debuggable
   end
 
   let(:test_class1) { Test1.new }
@@ -14,7 +14,7 @@ describe Slappy::Debuggable do
 
   describe 'Debug.log' do
     before do
-      Slappy.logger.instance_eval do
+      Remoppy.logger.instance_eval do
         def debug(msg)
           puts msg
         end

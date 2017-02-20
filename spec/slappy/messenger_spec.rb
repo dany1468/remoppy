@@ -1,40 +1,42 @@
 require 'spec_helper'
 
-describe Slappy::Messenger do
-  before { allow(Slack).to receive(:chat_postMessage).and_return(response) }
-  let(:response)  { { 'ok' => true } }
-  let(:messenger) { described_class.new options }
-  let(:options)   { { channel: channel } }
-  let(:channel) { Slappy::SlackAPI::Channel.new data }
-  let(:data)    { { id: id, name: 'test', text: 'text' } }
-  let(:id)        { '12345' }
-
+describe Remoppy::Messenger do
   describe '#message' do
-    subject { messenger.message }
-    let(:group_class)   { Slappy::SlackAPI::Group }
-    let(:channel_class) { Slappy::SlackAPI::Channel }
-    let(:direct_class)  { Slappy::SlackAPI::Direct }
+    let(:target_participation_id) { 1234 }
+    let(:target_participation_name) { 'target_participation_name' }
+    let(:target_participation) { instance_double('Participation', id: target_participation_id, name: target_participation_name) }
 
-    context 'when SlackAPI::Channel given' do
-      it { expect { subject }.not_to raise_error }
+    before do
+      allow(Remoppy::Remotty::Api::Room).to receive_message_chain(:rooms, :participations) { [target_participation] }
     end
 
-    context 'when group id given' do
-      before do
-        allow(group_class).to receive(:list).and_return([result])
-        allow(channel_class).to receive(:list).and_return([])
-        allow(direct_class).to receive(:list).and_return([])
+    let(:messenger) { Remoppy::Messenger.new(participation: participation, text: text, all: to_all) }
+    let(:participation) { target_participation_name }
+    let(:text) { 'comment' }
+    let(:to_all) { false }
+
+    describe 'participation について' do
+      context 'participation が指定されていないとき' do
+        let(:participation) { nil }
+
+        specify do
+          expect { messenger.message }.to raise_error(Remoppy::Messenger::MissingParticipationException)
+        end
       end
 
-      let(:result)  { group_class.new id: id }
-      let(:channel) { id }
+      context 'participation が指定されているとき' do
+        specify do
+          expect(Remoppy::Remotty::Api::Comment).to receive(:create).with(
+            participations_id: target_participation_id,
+            comment: {
+              content: text,
+              all: to_all
+            }
+          )
 
-      it { expect { subject }.not_to raise_error }
-    end
-
-    context 'when response expect error' do
-      let(:response) { { 'ok' => false } }
-      it { expect { subject }.to raise_error Slappy::SlackAPI::SlackError }
+          messenger.message
+        end
+      end
     end
   end
 end

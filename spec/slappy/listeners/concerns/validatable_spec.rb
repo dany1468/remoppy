@@ -2,9 +2,9 @@ require 'spec_helper'
 require 'active_support/core_ext/numeric/time'
 require 'timecop'
 
-describe Slappy::Listener::Validatable do
+describe Remoppy::Listener::Validatable do
   class SpecListener
-    include Slappy::Listener::Validatable
+    include Remoppy::Listener::Validatable
 
     def initialize(pattern)
       self.pattern = pattern
@@ -17,14 +17,14 @@ describe Slappy::Listener::Validatable do
 
   let(:listener) { SpecListener.new(pattern) }
   let(:pattern)  { 'test' }
-  let(:event)    { Slappy::Event.new(data) }
+  let(:event)    { Remoppy::Event.new(data) }
   let(:data)     { { 'spec' => 'test', 'ts' => data_ts.to_f.to_s } }
   let(:data_ts)  { 1.hours.since }
   let(:now)      { Time.now }
 
   before do
     Timecop.freeze(Time.now)
-    allow_any_instance_of(Slappy::Client).to receive(:start_time).and_return(now)
+    allow_any_instance_of(Remoppy::Client).to receive(:start_time).and_return(now)
   end
 
   describe '#valid?' do
@@ -47,14 +47,6 @@ describe Slappy::Listener::Validatable do
     context 'when not match pattern' do
       before { allow(listener).to receive(:time_valid?).and_return(true) }
       let(:data) { { spec: 'hoge' } }
-
-      it 'should not be execute' do
-        is_expected.to be_falsey
-      end
-    end
-
-    context 'when before start_time called' do
-      let(:data_ts) { 1.hours.ago }
 
       it 'should not be execute' do
         is_expected.to be_falsey

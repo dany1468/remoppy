@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Slappy::CLI do
-  let(:cli) { Slappy::CLI.new }
+describe Remoppy::CLI do
+  let(:cli) { Remoppy::CLI.new }
   describe '#build_command' do
     subject { cli.send :build_command, command_name }
     [:run, :generator].each do |command|
