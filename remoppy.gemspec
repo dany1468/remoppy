@@ -8,6 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['dany1468']
   spec.email         = ['dany1468@gmail.com']
 
+  spec.required_ruby_version = '~> 2.3'
+
   spec.summary       = %q{Simple Remotty Bot Framework}
   spec.description   = %q{Simple Remotty Bot Framework}
   spec.homepage      = 'https://github.com/dany1468/remoppy'
