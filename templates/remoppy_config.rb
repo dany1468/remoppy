@@ -34,10 +34,4 @@ Remoppy.configure do |config|
   #   If false, puts stack trace but be not stop when bot catch StandardError.
   #
   # config.stop_with_exception = true
-
-  # channel:
-  #   Channel, private group, or IM channel to send message to.
-  #   Can be an encoded ID, or a name. See below for more details.
-  #
-  # config.robot.channel = nil
 end
